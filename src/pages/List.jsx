@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
-import { backendUrl, currency } from '../App'
+import { currency } from '../App'
 import axios from 'axios'
-import instance from '../axios'
+import axiosInstance from '../axios'
 
 
 const List = () => {
@@ -17,8 +17,8 @@ const List = () => {
   // };
   const fetchList = async () => {
     try {
-      console.log('calling API:', backendUrl + '/api/products/');
-      const res = await axios.get( backendUrl + '/api/products/');
+      console.log('calling API:', axiosInstance +'/api/products/');
+      const res = await axiosInstance.get('/api/products/');
       console.log(res)
       if (res.data) {
         setList(res.data);
@@ -34,7 +34,7 @@ const List = () => {
   const removeProduct = async (id) => {
     try {
       
-      const res = await instance.delete( `/api/products/delete/${id}/`);
+      const res = await axiosInstance.delete( `/api/products/delete/${id}/`);
       console.log(res)
       if (res) {
         toast.success('product deleted...')

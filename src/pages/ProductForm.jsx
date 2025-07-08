@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import instance from "../axios";
 import upload_icon from "../assets/upload_area.png";
 import { toast } from "react-toastify";
-import { backendUrl } from "../App";
-import axios from "axios";
+import axiosInstance from '../axios'
 
 function ProductForm({ onSubmitted }) {
     const [form, setForm] = useState({
@@ -56,7 +54,7 @@ function ProductForm({ onSubmitted }) {
 
         try {
 
-            await axios.post(`${backendUrl}/api/products/`, formData, {
+            await axiosInstance.post('/api/products/', formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
             toast.success("product added...");
