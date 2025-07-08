@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import upload_icon from "../assets/upload_area.png";
 import { toast } from "react-toastify";
 import axiosInstance from '../axios'
+import { useAuth } from "@clerk/clerk-react";
 
 function ProductForm({ onSubmitted }) {
     const [form, setForm] = useState({
@@ -14,6 +15,7 @@ function ProductForm({ onSubmitted }) {
         bestseller: false,
     });
     const [images, setImages] = useState([]);
+    const { getToken } = useAuth();
 
     // Handle input changes
     const handleChange = (e) => {
@@ -53,9 +55,11 @@ function ProductForm({ onSubmitted }) {
         }
 
         try {
-
+            const token = await getToken();
             await axiosInstance.post('/api/products/', formData, {
-                headers: { "Content-Type": "multipart/form-data" },
+                headers: { "Content-Type": "multipart/form-data",
+                            Authorization: `Bearer ${token}`,
+                 },
             });
             toast.success("product added...");
             onSubmitted && onSubmitted();

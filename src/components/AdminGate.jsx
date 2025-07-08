@@ -13,13 +13,13 @@ const AdminGate = ({ getToken, children }) => {
         const checkRole = async () => {
             try {
                 const token = await getToken();
-                const res = await axiosInstance.get("/role", {
+                const res = await axiosInstance.get("/role/", {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
                 console.log(res.data);
-                if (res.data.role === "admin") {
+                if (res.data.role === "manager") {
                     setAllowed(true);
                 } else {
                     toast.error("Unauthorized access");

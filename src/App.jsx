@@ -11,25 +11,25 @@ import List from "./pages/List";
 import Orders from "./pages/Orders";
 import ProductForm from "./pages/ProductForm";
 
+export const backendUrl = import.meta.env.VITE_BACKEND_URL;
 export const currency = "₹";
 
 const App = () => {
     const { isSignedIn, getToken } = useAuth();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        if(isSignedIn) {
-            navigate('/', { replace: true });
-        }
-    }, [isSignedIn, navigate]);
     
-
     return (
         <div className="bg-gray-50 min-h-screen">
             <ToastContainer position="top-right" autoClose={3000} />
             {!isSignedIn ? (
                 <div className="flex items-center justify-center min-h-screen">
-                    <SignIn />
+                    <SignIn 
+                        signUpUrl={null}
+                        appearance={{
+                            elements:{
+                                footer: "hidden",
+                            }
+                        }}/>
                 </div>
             ) : (
                 <>
@@ -41,7 +41,7 @@ const App = () => {
                             <div className="w-[70%] mx-auto ml-[max(5vw, 25px)] my-8 text-gray-600 text-base">
                                 <Routes>
                                     <Route
-                                        path="/"
+                                        path="/add"
                                         element={<ProductForm />}
                                     />
                                     <Route

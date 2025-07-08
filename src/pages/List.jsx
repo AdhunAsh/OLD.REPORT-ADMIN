@@ -3,11 +3,14 @@ import { toast } from 'react-toastify'
 import { currency } from '../App'
 import axios from 'axios'
 import axiosInstance from '../axios'
+import { backendUrl } from '../App'
+import { useAuth } from '@clerk/clerk-react'
 
 
 const List = () => {
 
   const [list, setList] = useState([])
+  const { getToken } = useAuth();
 
   // const fetchList = async () => {
   //   const res = await axios.get('http://localhost:8000/api/products/');
@@ -17,7 +20,6 @@ const List = () => {
   // };
   const fetchList = async () => {
     try {
-      console.log('calling API:', axiosInstance +'/api/products/');
       const res = await axiosInstance.get('/api/products/');
       console.log(res)
       if (res.data) {
@@ -33,8 +35,11 @@ const List = () => {
 
   const removeProduct = async (id) => {
     try {
-      
-      const res = await axiosInstance.delete( `/api/products/delete/${id}/`);
+      const token = await getToken();
+      const res = await axiosInstance.delete( `/api/products/delete/${id}/`, {
+        headers : { Authorization: `Bearer ${token}`
+            }
+      });
       console.log(res)
       if (res) {
         toast.success('product deleted...')
