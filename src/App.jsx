@@ -33,7 +33,7 @@ const App = () => {
                 </div>
             ) : (
                 <>
-                    {/* <AdminGate getToken={getToken}> */}
+                    <AdminGate getToken={getToken}>
                         <NavBar />
                         <hr />
                         <div className="flex w-full">
@@ -55,7 +55,7 @@ const App = () => {
                                 </Routes>
                             </div>
                         </div>
-                    {/* </AdminGate> */}
+                    </AdminGate>
                 </>
             )}
         </div>
