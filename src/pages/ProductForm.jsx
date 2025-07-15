@@ -108,6 +108,7 @@ function ProductForm({ onSubmitted }) {
                                 onChange={(e) => handleImageChange(e, idx)}
                                 type="file"
                                 id={`image${idx + 1}`}
+                                accept="image/*"
                                 hidden
                             />
                         </label>
