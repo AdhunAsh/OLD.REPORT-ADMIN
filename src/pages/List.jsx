@@ -82,7 +82,7 @@ const List = () => {
                         key={index}
                     >
                         <img
-                            src={`${backendUrl}${item.images[0].image}`}
+                            src={`${item.images[0].image}`}
                             className="w-12"
                             alt=""
                         />
