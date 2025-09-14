@@ -45,7 +45,7 @@ const AdminGate = ({ getToken, children }) => {
     if (!allowed) {
         return (
             <div className="flex flex-col items-center mt-10">
-                <p className="text-red-500">You are not authoriszed to access this page</p>
+                <p className="text-red-500">You are not authorized to access this page</p>
                 <button onClick={()=> signOut()} className="px-4 py-2 bg-gray-800 text-white rounded mt-5">
                     Sign Out
                 </button>

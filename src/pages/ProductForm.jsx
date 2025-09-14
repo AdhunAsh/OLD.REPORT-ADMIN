@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import upload_icon from "../assets/upload_area.png";
 import { toast } from "react-toastify";
-import axiosInstance from '../axios'
+import axiosInstance from "../axios";
 import { useAuth } from "@clerk/clerk-react";
 
 function ProductForm({ onSubmitted }) {
@@ -15,6 +15,7 @@ function ProductForm({ onSubmitted }) {
         bestseller: false,
     });
     const [images, setImages] = useState([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const { getToken } = useAuth();
 
     // Handle input changes
@@ -40,9 +41,11 @@ function ProductForm({ onSubmitted }) {
 
         for (let key in form) {
             if (key === "stock_details") {
-                formData.append("stock_details", JSON.stringify(form.stock_details));
-                console.log(typeof(JSON.stringify(form.stock_details)))
-
+                formData.append(
+                    "stock_details",
+                    JSON.stringify(form.stock_details)
+                );
+                console.log(typeof JSON.stringify(form.stock_details));
             } else {
                 formData.append(key, form[key]);
             }
@@ -55,11 +58,15 @@ function ProductForm({ onSubmitted }) {
         }
 
         try {
+            if (isSubmitting) return;
+            setIsSubmitting(true);
+
             const token = await getToken();
-            await axiosInstance.post('/api/products/', formData, {
-                headers: { "Content-Type": "multipart/form-data",
-                            Authorization: `Bearer ${token}`,
-                 },
+            await axiosInstance.post("/api/products/", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token}`,
+                },
             });
             toast.success("product added...");
             onSubmitted && onSubmitted();
@@ -76,6 +83,8 @@ function ProductForm({ onSubmitted }) {
         } catch (err) {
             console.error(err.response?.data);
             toast.error("Error creating product");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -99,6 +108,7 @@ function ProductForm({ onSubmitted }) {
                                 onChange={(e) => handleImageChange(e, idx)}
                                 type="file"
                                 id={`image${idx + 1}`}
+                                accept="image/*"
                                 hidden
                             />
                         </label>
@@ -261,9 +271,38 @@ function ProductForm({ onSubmitted }) {
 
             <button
                 type="submit"
-                className="w-28 py-3 mt-4 bg-black text-white"
+                disabled={isSubmitting}
+                className={`w-28 py-3 mt-4 text-white flex items-center justify-center ${
+                    isSubmitting ? "bg-gray-500 cursor-not-allowed" : "bg-black"
+                }`}
             >
-                Submit
+                {isSubmitting ? (
+                    <>
+                        <svg
+                            className="animate-spin h-5 w-5 mr-2 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                        >
+                            <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                            ></circle>
+                            <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8v8z"
+                            ></path>
+                        </svg>
+                        Submitting...
+                    </>
+                ) : (
+                    "Submit"
+                )}
             </button>
         </form>
     );
