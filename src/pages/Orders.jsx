@@ -16,6 +16,7 @@ const Orders = () => {
                 const res = await axiosInstance.get("/all-orders/", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
+                console.log(res.data)
                 setOrders(res.data);
             } catch (err) {
                 console.error("Error fetching orders:", err);
@@ -118,6 +119,18 @@ const Orders = () => {
                                             </span>{" "}
                                             {order.address.first_name}{" "}
                                             {order.address.last_name}
+                                        </p>
+                                        <p className="text-sm text-gray-700">
+                                            <span className="font-semibold">
+                                                Razorpay Order ID:
+                                            </span>{" "}
+                                            {order.razorpay_order_id}
+                                        </p>
+                                        <p className="text-sm text-gray-700">
+                                            <span className="font-semibold">
+                                                Razorpay Payment ID:
+                                            </span>{" "}
+                                            {order.razorpay_payment_id}
                                         </p>
                                         <p className="text-sm text-gray-700">
                                             <span className="font-semibold">
