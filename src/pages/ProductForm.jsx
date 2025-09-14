@@ -3,6 +3,7 @@ import upload_icon from "../assets/upload_area.png";
 import { toast } from "react-toastify";
 import axiosInstance from "../axios";
 import { useAuth } from "@clerk/clerk-react";
+import { useLoading } from "../contexts/LoadingContext";
 
 function ProductForm({ onSubmitted }) {
     const [form, setForm] = useState({
@@ -11,12 +12,17 @@ function ProductForm({ onSubmitted }) {
         price: "",
         category: "Men",
         subcategory: "Topwear",
-        stock_details: [],
+        stock_details: [
+            { size: "M", quantity: 0 },
+            { size: "L", quantity: 0 },
+            { size: "XL", quantity: 0 }
+        ],
         bestseller: false,
     });
     const [images, setImages] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { getToken } = useAuth();
+    const { showLoading, hideLoading } = useLoading();
 
     // Handle input changes
     const handleChange = (e) => {
@@ -60,6 +66,7 @@ function ProductForm({ onSubmitted }) {
         try {
             if (isSubmitting) return;
             setIsSubmitting(true);
+            showLoading("Creating product...");
 
             const token = await getToken();
             await axiosInstance.post("/api/products/", formData, {
@@ -76,7 +83,11 @@ function ProductForm({ onSubmitted }) {
                 price: "",
                 category: "Men",
                 subcategory: "Topwear",
-                stock_details: [],
+                stock_details: [
+                    { size: "M", quantity: 0 },
+                    { size: "L", quantity: 0 },
+                    { size: "XL", quantity: 0 }
+                ],
                 bestseller: false,
             });
             setImages([]);
@@ -85,6 +96,7 @@ function ProductForm({ onSubmitted }) {
             toast.error("Error creating product");
         } finally {
             setIsSubmitting(false);
+            hideLoading();
         }
     };
 
@@ -179,80 +191,37 @@ function ProductForm({ onSubmitted }) {
             </div>
 
             <div>
-                <p className="mb-2 font-medium">Stock Details</p>
-                <div className="flex flex-col gap-2">
-                    {form.stock_details.map((stock, idx) => (
-                        <div key={idx} className="flex gap-2 items-center">
-                            <select
-                                value={stock.size}
-                                onChange={(e) => {
-                                    const updated = [...form.stock_details];
-                                    updated[idx].size = e.target.value;
-                                    setForm((f) => ({
-                                        ...f,
-                                        stock_details: updated,
-                                    }));
-                                }}
-                                className="px-2 py-1 border"
-                                required
-                            >
-                                <option value="">Select Size</option>
-                                <option value="M">M</option>
-                                <option value="L">L</option>
-                                <option value="XL">XL</option>
-                            </select>
-                            <input
-                                type="number"
-                                min={0}
-                                value={stock.quantity}
-                                onChange={(e) => {
-                                    const updated = [...form.stock_details];
-                                    updated[idx].quantity = Number(
-                                        e.target.value
-                                    );
-                                    setForm((f) => ({
-                                        ...f,
-                                        stock_details: updated,
-                                    }));
-                                }}
-                                className="px-2 py-1 border w-20"
-                                placeholder="Stock"
-                                required
-                            />
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    const updated = form.stock_details.filter(
-                                        (_, i) => i !== idx
-                                    );
-                                    setForm((f) => ({
-                                        ...f,
-                                        stock_details: updated,
-                                    }));
-                                }}
-                                className="text-red-500 px-2"
-                            >
-                                Remove
-                            </button>
-                        </div>
-                    ))}
-                    <div className="text-left">
-                        <button
-                            type="button"
-                            onClick={() =>
-                                setForm((f) => ({
-                                    ...f,
-                                    stock_details: [
-                                        ...f.stock_details,
-                                        { size: "", quantity: 0 },
-                                    ],
-                                }))
-                            }
-                            className="text-blue-500 mt-2"
-                        >
-                            + Add Size
-                        </button>
-                    </div>
+                <p className="mb-3 font-medium text-gray-700">Stock Details</p>
+                <div className="bg-white border rounded-lg overflow-hidden">
+                    <table className="w-full">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Size</th>
+                                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {form.stock_details.map((stock, idx) => (
+                                <tr key={idx} className="border-t">
+                                    <td className="px-4 py-3 font-medium text-gray-900">{stock.size}</td>
+                                    <td className="px-4 py-3">
+                                        <input
+                                            type="number"
+                                            min={0}
+                                            value={stock.quantity}
+                                            onChange={(e) => {
+                                                const updated = [...form.stock_details];
+                                                updated[idx].quantity = Number(e.target.value);
+                                                setForm((f) => ({ ...f, stock_details: updated }));
+                                            }}
+                                            className="w-20 px-3 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                            placeholder="0"
+                                        />
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             </div>
 

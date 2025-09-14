@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import List from "./pages/List";
 import Orders from "./pages/Orders";
+import OrderDetails from "./pages/OrderDetails";
 import ProductForm from "./pages/ProductForm";
 
 export const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -36,9 +37,9 @@ const App = () => {
                     <AdminGate getToken={getToken}>
                         <NavBar />
                         <hr />
-                        <div className="flex w-full">
+                        <div className="flex md:flex-row flex-col w-full">
                             <SideBar />
-                            <div className="w-[70%] mx-auto ml-[max(5vw, 25px)] my-8 text-gray-600 text-base">
+                            <div className="md:w-[70%] w-full mx-auto md:ml-[max(5vw, 25px)] my-8 text-gray-600 text-base px-4 md:px-0 pb-20 md:pb-8">
                                 <Routes>
                                     <Route
                                         path="/"
@@ -51,6 +52,10 @@ const App = () => {
                                     <Route
                                         path="/orders"
                                         element={<Orders />}
+                                    />
+                                    <Route
+                                        path="/orders/:id"
+                                        element={<OrderDetails />}
                                     />
                                 </Routes>
                             </div>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axiosInstance from "../axios";
 import { toast } from "react-toastify";
 import { useAuth } from '@clerk/clerk-react'
-import loading_icon from "../assets/loading.gif";
+import LoadingSpinner from './LoadingSpinner';
 
 const AdminGate = ({ getToken, children }) => {
     const [loading, setLoading] = useState(true);
@@ -34,12 +34,7 @@ const AdminGate = ({ getToken, children }) => {
     }, [getToken]);
 
     if (loading) {
-        return (
-            <div className="flex flex-col items-center">
-                <img className="w-20 mt-20" src={loading_icon} alt="" />
-                <p className="text-center mt-10">Checking access...</p>
-            </div>
-        );
+        return <LoadingSpinner message="Checking access..." />;
     }
 
     if (!allowed) {
